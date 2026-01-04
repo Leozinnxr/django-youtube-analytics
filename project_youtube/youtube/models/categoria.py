@@ -14,3 +14,5 @@ class Categoria(BaseModel):
 
     #TODO no script separar as categorias
 
+    def __str__(self):
+        return f"{self.categorias} - {self.palavras_chave}"

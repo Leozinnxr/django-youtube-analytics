@@ -6,15 +6,13 @@ from youtube.models import BaseModel
 
 class Playlist(BaseModel):
 
-    playlist_id = models.CharField(max_length=9, verbose_name="Playlist ID",
-                                   validators=[MinLengthValidator(9)])
+    playlist_id = models.CharField(max_length=9, verbose_name="Playlist ID", unique=True,
+                                   validators=[MinLengthValidator(9), RegexValidator(regex=r'^PL\d+$')])
 
     playlist_nome = models.CharField(max_length=100, verbose_name="Nome da Playlist",
-                                     validators=[MinLengthValidator(5), RegexValidator(regex=r'^PL\d+$')])
+                                     validators=[MinLengthValidator(5)])
 
     def clean(self):
-        try:
-            if not self.playlist_id.startswith("PL"):
-                raise ValidationError("")
-        except ValidationError as e:
-            print(e)
+
+        if not self.playlist_id.startswith("PL"):
+            raise ValidationError({"playlist_id":"Playlist IDs deve começar com 'PL'"})

@@ -5,7 +5,7 @@ from django.core.validators import MinLengthValidator, MinValueValidator, MaxVal
 from django.db import models
 
 from youtube.enumerations import QualidadePx, Visibilidade
-from youtube.models import BaseModel
+from youtube.models import BaseModel, Canal, Categoria, Playlist
 
 
 class Video(BaseModel):
@@ -14,7 +14,7 @@ class Video(BaseModel):
                                 validators=[MinLengthValidator(11)])
 
 
-    url = models.CharField(max_length=43, verbose_name="URL", unique=True,
+    url = models.URLField(max_length=43, verbose_name="URL", unique=True,
                            validators=[MinLengthValidator(43)])
 
 
@@ -49,18 +49,18 @@ class Video(BaseModel):
     visibilidade = models.CharField(verbose_name="Visibilidade", max_length=7,
                                     validators=[MinLengthValidator(7)], choices=Visibilidade)
 
+    canal = models.ForeignKey(Canal, on_delete=models.CASCADE, verbose_name="Canal")
+
+    categorias = models.ManyToManyField(Categoria,verbose_name='Categorias', blank=True)
+
+    playlist = models.ForeignKey(Playlist, on_delete=models.CASCADE, verbose_name="Playlist", blank=True)
+
 
     def clean(self):
 
-        try:
-            if not self.url.startswith("https://www.youtube.com/watch?v="):
-                raise ValidationError("")
-
-            today = date.today()
-            if self.data_postagem < today:
-                raise ValidationError("")
+        if not self.url.startswith("https://www.youtube.com/watch?v="):
+            raise ValidationError({"url": "URL deve começar com 'https://www.youtube.com/watch?v=..."})
 
 
 
-        except ValidationError as e:
-            print(e)
+

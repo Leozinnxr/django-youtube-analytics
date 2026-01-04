@@ -17,10 +17,12 @@ class Canal(BaseModel):
 
 
     def clean(self):
-        try:
-            if not self.canal_nome.strartswitch("Canal"):
+        super().clean()
 
-                raise ValidationError("")
+        if not self.canal_nome.startswith("Canal"):
+            raise ValidationError({
+                "canal_nome": "O nome do canal deve iniciar com 'Canal'."
+            })
 
-        except ValidationError as e:
-            print(e)
+    def __str__(self):
+        return f"{self.canal_nome} - {self.canal_inscritos}"
