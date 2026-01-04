@@ -11,6 +11,9 @@ class VideoManager(BaseManager):
     def privados(self) -> QuerySet['Video']:
         return Video.objects.filter(visibilidade = "PRIVADO")
 
+    def videos_do_canal(self, canal_youtube_id: str) -> QuerySet['Video']:
+        canal = Video.objects.filter(canal_youtube_id = canal_youtube_id)
+
 
 
 
