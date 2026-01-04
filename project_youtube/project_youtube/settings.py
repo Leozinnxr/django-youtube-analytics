@@ -78,7 +78,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'project_youtube',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': '7702',
         'HOST': 'localhost',
         'PORT': '3306',
     }

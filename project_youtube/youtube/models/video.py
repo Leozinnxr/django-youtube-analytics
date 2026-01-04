@@ -1,5 +1,7 @@
+from datetime import date
+from youtube.validators import ValidarData
 from django.core.exceptions import ValidationError
-from django.core.validators import MinLengthValidator, MinValueValidator
+from django.core.validators import MinLengthValidator, MinValueValidator, MaxValueValidator
 from django.db import models
 
 from youtube.enumerations import QualidadePx, Visibilidade
@@ -31,14 +33,18 @@ class Video(BaseModel):
 
     comentarios = models.IntegerField(verbose_name="Comentários", validators=[MinValueValidator(0)])
 
-    qualidade_px = models.CharField(verbose_name="Qualidade", max_length=5,
-                                    validators=[MinLengthValidator(3)], choices=QualidadePx)
 
     descricao = models.TextField(verbose_name="Descrição do vídeo", max_length=400,validators=[MinLengthValidator(3)])
 
 
     data_postagem = models.DateField(verbose_name="Data do video",
-                                     auto_now=False, auto_now_add=False)
+                                     auto_now=False, auto_now_add=False, validators=[ValidarData()])
+
+    idioma = models.CharField(max_length=5, verbose_name="Idioma", validators=[MinLengthValidator(2)],
+                              )
+
+    qualidade_px = models.CharField(verbose_name="Qualidade", max_length=5,
+                                    validators=[MinLengthValidator(3)], choices=QualidadePx)
 
     visibilidade = models.CharField(verbose_name="Visibilidade", max_length=7,
                                     validators=[MinLengthValidator(7)], choices=Visibilidade)
@@ -49,5 +55,12 @@ class Video(BaseModel):
         try:
             if not self.url.startswith("https://www.youtube.com/watch?v="):
                 raise ValidationError("")
+
+            today = date.today()
+            if self.data_postagem < today:
+                raise ValidationError("")
+
+
+
         except ValidationError as e:
             print(e)

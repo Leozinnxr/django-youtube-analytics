@@ -1,2 +1,2 @@
-from visibilidade import *
-from qualidade_px import *
+from .visibilidade import *
+from .qualidade_px import *
